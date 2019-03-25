@@ -57,7 +57,7 @@ function NumPad({ classes, text, onChange }: Props) {
   return (
     <Paper style={{ margin: '1rem' }}>
       <Grid container>
-        <Grid item xs={12} className={classes.textArea}>
+        <Grid data-testid="text" item xs={12} className={classes.textArea}>
           {text}
         </Grid>
         <Grid item xs={12} className={classes.textArea}>

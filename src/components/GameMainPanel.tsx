@@ -57,7 +57,8 @@ function GameMainPanel({ classes }: Props) {
                 variant="contained"
                 className={classes.button}
                 color={'secondary'}
-                onClick={gameStart}>
+                onClick={gameStart}
+                data-testid="start">
                 START
               </Button>
             </Grid>
@@ -65,7 +66,7 @@ function GameMainPanel({ classes }: Props) {
         } else if (state === 'running') {
           return (
             <Grid item xs={10}>
-              <NumPad onChange={gameRun} />
+              <NumPad text="aaa" onChange={gameRun} />
             </Grid>
           );
         } else {
