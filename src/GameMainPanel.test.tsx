@@ -5,6 +5,7 @@ import {
   fireEvent,
   cleanup,
   waitForElement,
+  act,
 } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 
@@ -16,7 +17,9 @@ afterEach(cleanup);
 test('GameMainPanelを読み込んでSTARTボタンを押すとゲーム画面が表示される', async () => {
   const { getByTestId, container } = render(<GameMainPanel />);
   const startButton = await waitForElement(() => getByTestId('start'));
-  fireEvent.click(startButton);
+  act(() => {
+    fireEvent.click(startButton);
+  });
   expect(getByTestId('text')).toHaveTextContent('aaa');
   expect(container.firstChild).toMatchSnapshot();
 });

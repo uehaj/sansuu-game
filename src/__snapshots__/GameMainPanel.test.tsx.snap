@@ -30,7 +30,7 @@ exports[`GameMainPanelを読み込んでSTARTボタンを押すとゲーム画�
             class="MuiPaper-root-174 MuiPaper-elevation2-178 MuiPaper-rounded-175"
           >
             <p
-              class="MuiTypography-root-201 MuiTypography-body1-210 MuiTypography-alignRight-225 NumPad-inputArea-173"
+              class="MuiTypography-root-201 MuiTypography-body1-210 MuiTypography-alignCenter-224 NumPad-inputArea-173"
             >
               0
             </p>

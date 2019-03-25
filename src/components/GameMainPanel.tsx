@@ -28,9 +28,9 @@ type Props = {
 const gameRun = () => useCallback(k => console.log(k), []);
 
 function GameMainPanel({ classes }: Props) {
-  const [gameState, gameUpdator] = useGameState();
+  const { gameState, setGamePhase } = useGameState();
   const gameStart = useCallback(() => {
-    gameUpdator.setGamePhase('running');
+    setGamePhase('running');
   }, []);
 
   return (
@@ -39,11 +39,11 @@ function GameMainPanel({ classes }: Props) {
       {(state => {
         console.log(state);
         if (state === 'initial') {
-          gameUpdator.setGamePhase('splash');
+          setGamePhase('splash');
           return <div />;
         } else if (state === 'splash') {
           setTimeout(() => {
-            gameUpdator.setGamePhase('ready');
+            setGamePhase('ready');
           }, 1000);
           return (
             <Typography align={'center'} variant={'h1'}>

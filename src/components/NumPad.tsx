@@ -62,7 +62,7 @@ function NumPad({ classes, text, onChange }: Props) {
         </Grid>
         <Grid item xs={12} className={classes.textArea}>
           <Paper>
-            <Typography align={'right'} className={classes.inputArea}>
+            <Typography align={'center'} className={classes.inputArea}>
               {number}
             </Typography>
           </Paper>

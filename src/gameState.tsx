@@ -12,24 +12,22 @@ export type GameUpdator = {
   setGameRound: (round: number) => void;
 };
 
-export function useGameState(): [GameState, GameUpdator] {
+export function useGameState() {
   const [gameState, setGameState] = useState<GameState>({
     gamePhase: 'initial',
     gameRound: 0,
   });
-  return [
+  return {
     gameState,
-    {
-      setGamePhase: (newPhase: GamePhase) =>
-        setGameState((prevState: GameState) => ({
-          ...prevState,
-          gamePhase: newPhase,
-        })),
-      setGameRound: (newRound: number) =>
-        setGameState(prevState => ({
-          ...prevState,
-          gameRound: newRound,
-        })),
-    },
-  ];
+    setGamePhase: (newPhase: GamePhase) =>
+      setGameState((prevState: GameState) => ({
+        ...prevState,
+        gamePhase: newPhase,
+      })),
+    setGameRound: (newRound: number) =>
+      setGameState(prevState => ({
+        ...prevState,
+        gameRound: newRound,
+      })),
+  };
 }
