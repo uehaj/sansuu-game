@@ -10,6 +10,14 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import green from '@material-ui/core/colors/green';
+import amber from '@material-ui/core/colors/amber';
+import InfoIcon from '@material-ui/icons/Info';
+import CloseIcon from '@material-ui/icons/Close';
+import { Game, GameState } from '../gameState';
+import classNames from 'classnames';
 
 const styles = {
   numButton: {
@@ -29,14 +37,17 @@ const styles = {
 
 type Props = {
   classes: any;
-  onChange?: (n: number) => void;
-  text?: string;
+  onChange?: (game: Game, answer: number, lastRoundStarted: number) => void;
+  onOk?: () => void;
+  gameState: GameState;
+  message?: string;
 };
 
 const onKey = (
   keyTop: any,
+  gameState: GameState,
   setNumber: (z: number | ((y: number) => number)) => void,
-  onChange?: (n: number) => void
+  onChange: Props['onChange']
 ) => (k: any) => {
   if (typeof keyTop === 'number') {
     setNumber((prevN: number) => prevN * 10 + keyTop);
@@ -44,42 +55,72 @@ const onKey = (
     if (keyTop === 'CLR') {
       setNumber(0);
     } else if (onChange && keyTop === 'OK') {
+      const game = gameState.gameRounds[gameState.currentGameRound];
       setNumber(prevN => {
-        onChange(prevN);
-        return 0;
+        if (gameState.lastRoundStarted) {
+          onChange(game, prevN, gameState.lastRoundStarted);
+        }
+        return prevN;
       });
     }
   }
 };
 
-function NumPad({ classes, text, onChange }: Props) {
+function NumPad({ classes, gameState, onChange, onOk, message }: Props) {
   const [number, setNumber] = useState<number>(0);
+  const game = gameState.gameRounds[gameState.currentGameRound];
   return (
-    <Paper style={{ margin: '1rem' }}>
-      <Grid container>
-        <Grid data-testid="text" item xs={12} className={classes.textArea}>
-          {text}
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={!!message}
+        message={
+          <>
+            <Typography variant={'h4'} style={{ color: 'white' }}>
+              {message}
+            </Typography>
+            <Typography>
+              <Button onClick={onOk} variant={'contained'}>
+                <Typography variant={'h4'}>OK</Typography>
+              </Button>
+            </Typography>
+          </>
+        }
+      />
+      <Grid container spacing={32}>
+        <Grid item xs={12}>
+          <Typography variant={'h3'}>
+            <b>{`問題${gameState.currentGameRound + 1} `}</b>
+          </Typography>
         </Grid>
-        <Grid item xs={12} className={classes.textArea}>
+      </Grid>
+      <Grid container spacing={32} style={{ padding: '1em' }}>
+        <Grid item xs={6}>
+          <Typography variant={'h4'}>{`${game.question}`}</Typography>
+        </Grid>
+        <Grid item xs={6}>
           <Paper>
-            <Typography align={'center'} className={classes.inputArea}>
+            <Typography variant={'h3'} align={'right'}>
               {number}
             </Typography>
           </Paper>
         </Grid>
-
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'CLR', 'OK'].map(n => (
-          <Grid item xs={4} key={n} style={{ textAlign: 'center' }}>
-            <Button
-              variant="contained"
-              className={classes.numButton}
-              onClick={onKey(n, setNumber, onChange)}>
-              {n}
-            </Button>
-          </Grid>
-        ))}
       </Grid>
-    </Paper>
+      <Paper style={{ margin: '1em' }}>
+        <Grid container justify="space-between">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'CLR', 'OK'].map(n => (
+            <Grid item xs={4} key={n} style={{ textAlign: 'center' }}>
+              <Button
+                variant="contained"
+                className={classes.numButton}
+                onClick={onKey(n, gameState, setNumber, onChange)}>
+                {n}
+              </Button>
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
+    </>
   );
 }
 

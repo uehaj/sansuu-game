@@ -13,10 +13,10 @@ test('初期状態のgamePhaseはinitialである', () => {
 test('指定したgamePhaseに設定される', () => {
   const { result } = renderHook(() => useGameState());
 
-  act(() => result.current.setGamePhase('ready'));
+  act(() => result.current.setPhase('ready'));
   expect(result.current.gameState.gamePhase).toBe('ready');
-  act(() => result.current.setGamePhase('splash'));
+  act(() => result.current.setPhase('splash'));
   expect(result.current.gameState.gamePhase).toBe('splash');
-  act(() => result.current.setGamePhase('running'));
+  act(() => result.current.setPhase('running'));
   expect(result.current.gameState.gamePhase).toBe('running');
 });

@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 import NumPad from './NumPad';
-import { useGameState } from '../gameState';
+import { useGameState, Game } from '../gameState';
 
 const styles = {
   button: {
@@ -25,32 +25,77 @@ type Props = {
   classes: any;
 };
 
-const gameRun = () => useCallback(k => console.log(k), []);
-
 function GameMainPanel({ classes }: Props) {
-  const { gameState, setGamePhase } = useGameState();
+  const {
+    gameState,
+    setPhase,
+    setCurrentRound,
+    setPlayerName,
+    setStartTimeInString,
+    setFinishTimeInString,
+    setLastRoundStarted,
+    addResult,
+  } = useGameState();
+
   const gameStart = useCallback(() => {
-    setGamePhase('running');
+    setPhase('running');
+    const now = new Date();
+    setLastRoundStarted(now.getTime());
+    setStartTimeInString(now.toLocaleString());
   }, []);
 
+  const handleAnswerd = (
+    game: Game,
+    answer: number,
+    lastRoundStarted: number
+  ) => {
+    if (game.answer === answer) {
+      setPhase('answered', `正解です`);
+    } else {
+      setPhase('answered', `${answer}は不正解です。正解は${game.answer}`);
+    }
+    addResult({
+      elapsedTimeInMilliSec: Date.now() - lastRoundStarted,
+      correct: game.answer === answer,
+    });
+  };
+
+  const handleOk = () => {
+    setPhase('running');
+    if (gameState.currentGameRound === gameState.gameRounds.length - 1) {
+      setFinishTimeInString(new Date().toString());
+      setPhase('finished');
+    } else {
+      setCurrentRound(gameState.currentGameRound + 1);
+    }
+  };
+
   return (
-    <Grid container>
+    <Grid container style={{ margin: '1em' }}>
       <Grid item xs={1} />
-      {(state => {
-        console.log(state);
-        if (state === 'initial') {
-          setGamePhase('splash');
+      {(gameState => {
+        if (gameState.gamePhase === 'initial') {
+          setPhase('splash');
           return <div />;
-        } else if (state === 'splash') {
+        } else if (gameState.gamePhase === 'splash') {
           setTimeout(() => {
-            setGamePhase('ready');
+            setPhase('ready');
           }, 1000);
           return (
-            <Typography align={'center'} variant={'h1'}>
-              算数ゲーム
-            </Typography>
+            <Grid container>
+              <Grid item xs={12}>
+                <Typography align={'center'} variant={'h1'}>
+                  算数ゲーム
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography align={'center'} variant={'h4'}>
+                  さんすうゲームがはじまります。
+                </Typography>
+              </Grid>
+            </Grid>
           );
-        } else if (state === 'ready') {
+        } else if (gameState.gamePhase === 'ready') {
           return (
             <Grid item xs={10}>
               <Button
@@ -63,16 +108,26 @@ function GameMainPanel({ classes }: Props) {
               </Button>
             </Grid>
           );
-        } else if (state === 'running') {
+        } else if (gameState.gamePhase === 'running') {
           return (
             <Grid item xs={10}>
-              <NumPad text="aaa" onChange={gameRun} />
+              <NumPad gameState={gameState} onChange={handleAnswerd} />
+            </Grid>
+          );
+        } else if (gameState.gamePhase === 'answered') {
+          return (
+            <Grid item xs={10}>
+              <NumPad
+                gameState={gameState}
+                message={gameState.message}
+                onOk={handleOk}
+              />
             </Grid>
           );
         } else {
           return <div>Error</div>;
         }
-      })(gameState.gamePhase)}
+      })(gameState)}
     </Grid>
   );
 }

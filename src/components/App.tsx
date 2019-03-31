@@ -39,7 +39,9 @@ function ButtonAppBar({ classes }: Props) {
             aria-label="Menu">
             <MenuIcon />
           </IconButton>
-          <Button color="inherit">さんすうゲーム</Button>
+          <Typography variant={'h4'} color="inherit">
+            さんすうゲーム
+          </Typography>
         </Toolbar>
       </AppBar>
 
