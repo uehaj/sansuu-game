@@ -25,9 +25,9 @@ const styles = {
   },
 };
 
-type Props = { classes: any };
+type Props = { classes: any; log: any };
 
-function ButtonAppBar({ classes }: Props) {
+function App({ classes, log }: Props) {
   return (
     <>
       <CssBaseline />
@@ -45,9 +45,9 @@ function ButtonAppBar({ classes }: Props) {
         </Toolbar>
       </AppBar>
 
-      <GameMainPanel />
+      <GameMainPanel log={log} />
     </>
   );
 }
 
-export default withStyles(styles)(ButtonAppBar);
+export default withStyles(styles)(App);

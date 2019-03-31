@@ -110,6 +110,12 @@ export function useGameState(nRounds = 5) {
         lastRoundStarted,
       }));
     },
+    clearResult: () => {
+      setGameState(prevState => ({
+        ...prevState,
+        results: [],
+      }));
+    },
     addResult: (result: Record) => {
       setGameState(prevState => ({
         ...prevState,

@@ -15,7 +15,7 @@ import GameMainPanel from './components/GameMainPanel';
 afterEach(cleanup);
 
 test('GameMainPanelを読み込んでSTARTボタンを押すとゲーム画面が表示される', async () => {
-  const { getByTestId, container } = render(<GameMainPanel />);
+  const { getByTestId, container } = render(<GameMainPanel log="" />);
   const startButton = await waitForElement(() => getByTestId('start'));
   act(() => {
     fireEvent.click(startButton);

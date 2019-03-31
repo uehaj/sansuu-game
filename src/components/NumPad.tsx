@@ -21,8 +21,8 @@ import classNames from 'classnames';
 
 const styles = {
   numButton: {
-    margin: '1rem',
-    fontSize: '2rem',
+    margin: '0.5rem',
+    fontSize: '1.2rem',
   },
   textArea: {
     margin: '1rem',
@@ -48,23 +48,27 @@ const onKey = (
   gameState: GameState,
   setNumber: (z: number | ((y: number) => number)) => void,
   onChange: Props['onChange']
-) => (k: any) => {
-  if (typeof keyTop === 'number') {
-    setNumber((prevN: number) => prevN * 10 + keyTop);
-  } else if (typeof keyTop === 'string') {
-    if (keyTop === 'CLR') {
-      setNumber(0);
-    } else if (onChange && keyTop === 'OK') {
-      setNumber(prevN => {
-        const game = gameState.gameRounds[gameState.currentGameRound];
-        if (gameState.lastRoundStarted) {
-          onChange(game, prevN, gameState.lastRoundStarted);
+) =>
+  useCallback(
+    (k: any) => {
+      if (typeof keyTop === 'number') {
+        setNumber((prevN: number) => prevN * 10 + keyTop);
+      } else if (typeof keyTop === 'string') {
+        if (keyTop === 'CLR') {
+          setNumber(0);
+        } else if (onChange && keyTop === 'OK') {
+          setNumber(prevN => {
+            const game = gameState.gameRounds[gameState.currentGameRound];
+            if (gameState.lastRoundStarted) {
+              onChange(game, prevN, gameState.lastRoundStarted);
+            }
+            return prevN;
+          });
         }
-        return prevN;
-      });
-    }
-  }
-};
+      }
+    },
+    [keyTop, gameState, setNumber, onChange]
+  );
 
 function NumPad({
   classes,
@@ -103,33 +107,30 @@ function NumPad({
       />
       <Grid container spacing={32}>
         <Grid item xs={12}>
-          <Typography variant={'h3'} align={'center'}>
+          <Typography variant={'h4'} align={'center'}>
             <b>{`問題${gameState.currentGameRound + 1} `}</b>(
             {gameState.currentGameRound + 1} / {gameState.gameRounds.length})
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={32} style={{ padding: '1em' }}>
-        <Grid item xs={6}>
+      <Grid container spacing={32} style={{ padding: '0.1em' }}>
+        <Grid item xs={12} sm={6}>
           <Typography variant={'h4'}>{`${game.question}`}</Typography>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <Paper>
-            <Typography
-              variant={'h3'}
-              align={'right'}
-              style={{ padding: '0.2em' }}>
+            <Typography variant={'h3'} align={'right'}>
               {number}
             </Typography>
           </Paper>
         </Grid>
       </Grid>
-      <Paper style={{ margin: '1em', padding: '1em' }}>
+      <Paper style={{ margin: '0.1em', padding: '0.1em' }}>
         <Grid container justify="space-between">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'CLR', 'OK'].map(n => (
             <Grid item xs={4} key={n} style={{ textAlign: 'center' }}>
               <Button
-                variant={'extendedFab'}
+                variant={'raised'}
                 className={classes.numButton}
                 onClick={onKey(n, gameState, setNumber, onChange)}>
                 {n}

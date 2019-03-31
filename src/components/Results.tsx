@@ -21,37 +21,39 @@ const styles = createStyles((theme: any) => ({
   },
 }));
 
-type Props = { classes: any; gameState: GameState };
+type Props = { classes: any; gameLog: any };
 
 function Results(props: Props) {
-  const { classes, gameState } = props;
-  const { gameRounds, results } = gameState;
+  const { classes, gameLog } = props;
 
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat (g)</TableCell>
-            <TableCell align="right">Carbs (g)</TableCell>
-            <TableCell align="right">Protein (g)</TableCell>
+            <TableCell>日付</TableCell>
+            <TableCell>名前</TableCell>
+            <TableCell>正解</TableCell>
+            <TableCell>平均時間</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {Array(results.length)
-            .fill(0)
-            .map((_, i: number) => (
-              <TableRow key={i}>
-                <TableCell component="th" scope="row">
-                  {gameState.startTimeInString}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {gameState.finishTimeInString}
-                </TableCell>
-              </TableRow>
-            ))}
+          {gameLog.map((result: any, i: number) => (
+            <TableRow key={i}>
+              <TableCell component="th" scope="row">
+                {result[0]}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {result[1]}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {result[2]}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {result[3]}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </Paper>

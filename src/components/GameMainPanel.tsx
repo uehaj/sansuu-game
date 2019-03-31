@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -13,20 +13,23 @@ import Paper from '@material-ui/core/Paper';
 
 import NumPad from './NumPad';
 import Results from './Results';
-import { useGameState, Game } from '../gameState';
+import { useGameState, Game, GameState, Record } from '../gameState';
 
 const styles = {
   button: {
-    margin: '1rem',
+    margin: '3rem',
     fontSize: '2rem',
+    width: '70%',
   },
 };
 
 type Props = {
   classes: any;
+  log: any;
 };
 
-function GameMainPanel({ classes }: Props) {
+function GameMainPanel({ classes, log }: Props) {
+  const [gameLog, setGameLog] = useState<any>([]);
   const {
     gameState,
     setPhase,
@@ -35,6 +38,7 @@ function GameMainPanel({ classes }: Props) {
     setStartTimeInString,
     setFinishTimeInString,
     setLastRoundStarted,
+    clearResult,
     addResult,
   } = useGameState();
 
@@ -43,6 +47,9 @@ function GameMainPanel({ classes }: Props) {
     const now = new Date();
     setLastRoundStarted(now.getTime());
     setStartTimeInString(now.toLocaleString());
+    setCurrentRound(0);
+    clearResult();
+    setPlayerName('unknown');
   }, []);
 
   const handleAnswerd = (
@@ -65,18 +72,33 @@ function GameMainPanel({ classes }: Props) {
     setPhase('running');
     if (gameState.currentGameRound === gameState.gameRounds.length - 1) {
       setFinishTimeInString(new Date().toString());
+      const gameResult = [
+        gameState.startTimeInString,
+        gameState.playerName,
+        `${gameState.results.reduce(
+          (acc, curr) => acc + (curr.correct ? 1 : 0),
+          0
+        )} / ${gameState.results.length}`,
+        gameState.results.reduce(
+          (acc, curr) => acc + curr.elapsedTimeInMilliSec,
+          0
+        ) / gameState.gameRounds.length,
+      ];
+      setGameLog((prevValue: any) => [...prevValue, gameResult]);
+      localStorage.setItem('log', JSON.stringify(gameResult));
+
       setPhase('finished');
     } else {
       setCurrentRound(gameState.currentGameRound + 1);
     }
   };
 
-  const gameReviewed = useCallback(() => {
+  const gameReviewed = (gameState: GameState) => () => {
     setPhase('initial');
-  }, []);
+  };
 
   return (
-    <Grid container style={{ margin: '1em' }}>
+    <Grid container>
       <Grid item xs={1} />
       {(gameState => {
         if (gameState.gamePhase === 'initial') {
@@ -103,7 +125,7 @@ function GameMainPanel({ classes }: Props) {
         } else if (gameState.gamePhase === 'ready') {
           return (
             <Grid container>
-              <Grid item xs={10}>
+              <Grid item xs={12}>
                 <Button
                   variant="contained"
                   className={classes.button}
@@ -135,18 +157,18 @@ function GameMainPanel({ classes }: Props) {
           return (
             <Grid container>
               <Grid item>
-                <Results gameState={gameState} />
+                <Results gameLog={gameLog} />
               </Grid>
               <Grid item xs={10}>
                 <Button
                   variant="contained"
                   className={classes.button}
                   color={'secondary'}
-                  onClick={gameReviewed}
+                  onClick={gameReviewed(gameState)}
                   data-testid="start">
                   OK
                 </Button>
-              </Grid>{' '}
+              </Grid>
             </Grid>
           );
         } else {
