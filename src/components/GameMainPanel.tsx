@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 import NumPad from './NumPad';
+import Results from './Results';
 import { useGameState, Game } from '../gameState';
 
 const styles = {
@@ -60,7 +61,7 @@ function GameMainPanel({ classes }: Props) {
     });
   };
 
-  const handleOk = () => {
+  const handleSnackBarOk = () => {
     setPhase('running');
     if (gameState.currentGameRound === gameState.gameRounds.length - 1) {
       setFinishTimeInString(new Date().toString());
@@ -69,6 +70,10 @@ function GameMainPanel({ classes }: Props) {
       setCurrentRound(gameState.currentGameRound + 1);
     }
   };
+
+  const gameReviewed = useCallback(() => {
+    setPhase('initial');
+  }, []);
 
   return (
     <Grid container style={{ margin: '1em' }}>
@@ -97,15 +102,17 @@ function GameMainPanel({ classes }: Props) {
           );
         } else if (gameState.gamePhase === 'ready') {
           return (
-            <Grid item xs={10}>
-              <Button
-                variant="contained"
-                className={classes.button}
-                color={'secondary'}
-                onClick={gameStart}
-                data-testid="start">
-                START
-              </Button>
+            <Grid container>
+              <Grid item xs={10}>
+                <Button
+                  variant="contained"
+                  className={classes.button}
+                  color={'secondary'}
+                  onClick={gameStart}
+                  data-testid="start">
+                  START
+                </Button>
+              </Grid>
             </Grid>
           );
         } else if (gameState.gamePhase === 'running') {
@@ -120,8 +127,26 @@ function GameMainPanel({ classes }: Props) {
               <NumPad
                 gameState={gameState}
                 message={gameState.message}
-                onOk={handleOk}
+                onSnackbarOk={handleSnackBarOk}
               />
+            </Grid>
+          );
+        } else if (gameState.gamePhase === 'finished') {
+          return (
+            <Grid container>
+              <Grid item>
+                <Results gameState={gameState} />
+              </Grid>
+              <Grid item xs={10}>
+                <Button
+                  variant="contained"
+                  className={classes.button}
+                  color={'secondary'}
+                  onClick={gameReviewed}
+                  data-testid="start">
+                  OK
+                </Button>
+              </Grid>{' '}
             </Grid>
           );
         } else {

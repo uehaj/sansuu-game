@@ -38,7 +38,7 @@ const styles = {
 type Props = {
   classes: any;
   onChange?: (game: Game, answer: number, lastRoundStarted: number) => void;
-  onOk?: () => void;
+  onSnackbarOk?: () => void;
   gameState: GameState;
   message?: string;
 };
@@ -55,8 +55,8 @@ const onKey = (
     if (keyTop === 'CLR') {
       setNumber(0);
     } else if (onChange && keyTop === 'OK') {
-      const game = gameState.gameRounds[gameState.currentGameRound];
       setNumber(prevN => {
+        const game = gameState.gameRounds[gameState.currentGameRound];
         if (gameState.lastRoundStarted) {
           onChange(game, prevN, gameState.lastRoundStarted);
         }
@@ -66,8 +66,15 @@ const onKey = (
   }
 };
 
-function NumPad({ classes, gameState, onChange, onOk, message }: Props) {
+function NumPad({
+  classes,
+  gameState,
+  onChange,
+  onSnackbarOk,
+  message,
+}: Props) {
   const [number, setNumber] = useState<number>(0);
+
   const game = gameState.gameRounds[gameState.currentGameRound];
   return (
     <>
@@ -80,7 +87,14 @@ function NumPad({ classes, gameState, onChange, onOk, message }: Props) {
               {message}
             </Typography>
             <Typography>
-              <Button onClick={onOk} variant={'contained'}>
+              <Button
+                onClick={() => {
+                  setNumber(0);
+                  if (onSnackbarOk) {
+                    onSnackbarOk();
+                  }
+                }}
+                variant={'contained'}>
                 <Typography variant={'h4'}>OK</Typography>
               </Button>
             </Typography>
@@ -89,8 +103,9 @@ function NumPad({ classes, gameState, onChange, onOk, message }: Props) {
       />
       <Grid container spacing={32}>
         <Grid item xs={12}>
-          <Typography variant={'h3'}>
-            <b>{`問題${gameState.currentGameRound + 1} `}</b>
+          <Typography variant={'h3'} align={'center'}>
+            <b>{`問題${gameState.currentGameRound + 1} `}</b>(
+            {gameState.currentGameRound + 1} / {gameState.gameRounds.length})
           </Typography>
         </Grid>
       </Grid>
@@ -100,18 +115,21 @@ function NumPad({ classes, gameState, onChange, onOk, message }: Props) {
         </Grid>
         <Grid item xs={6}>
           <Paper>
-            <Typography variant={'h3'} align={'right'}>
+            <Typography
+              variant={'h3'}
+              align={'right'}
+              style={{ padding: '0.2em' }}>
               {number}
             </Typography>
           </Paper>
         </Grid>
       </Grid>
-      <Paper style={{ margin: '1em' }}>
+      <Paper style={{ margin: '1em', padding: '1em' }}>
         <Grid container justify="space-between">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'CLR', 'OK'].map(n => (
             <Grid item xs={4} key={n} style={{ textAlign: 'center' }}>
               <Button
-                variant="contained"
+                variant={'extendedFab'}
                 className={classes.numButton}
                 onClick={onKey(n, gameState, setNumber, onChange)}>
                 {n}
