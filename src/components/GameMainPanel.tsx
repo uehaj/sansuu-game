@@ -25,11 +25,12 @@ const styles = {
 
 type Props = {
   classes: any;
+  useGameStateResult: ReturnType<typeof useGameState>;
   log: any;
 };
 
-function GameMainPanel({ classes, log }: Props) {
-  const [gameLog, setGameLog] = useState<any>([]);
+function GameMainPanel({ classes, useGameStateResult, log }: Props) {
+  const [gameLog, setGameLog] = useState<[][]>([]);
   const {
     gameState,
     setPhase,
@@ -40,7 +41,7 @@ function GameMainPanel({ classes, log }: Props) {
     setLastRoundStarted,
     clearResult,
     addResult,
-  } = useGameState();
+  } = useGameStateResult;
 
   const gameStart = useCallback(() => {
     setPhase('running');
@@ -82,7 +83,9 @@ function GameMainPanel({ classes, log }: Props) {
         gameState.results.reduce(
           (acc, curr) => acc + curr.elapsedTimeInMilliSec,
           0
-        ) / gameState.gameRounds.length,
+        ) /
+          1000 /
+          gameState.gameRounds.length,
       ];
       setGameLog((prevValue: any) => [...prevValue, gameResult]);
       localStorage.setItem('log', JSON.stringify(gameResult));
@@ -157,7 +160,7 @@ function GameMainPanel({ classes, log }: Props) {
           return (
             <Grid container>
               <Grid item>
-                <Results gameLog={gameLog} />
+                <Results componentProps={{ width: '100%' }} gameLog={gameLog} />
               </Grid>
               <Grid item xs={10}>
                 <Button
@@ -165,7 +168,7 @@ function GameMainPanel({ classes, log }: Props) {
                   className={classes.button}
                   color={'secondary'}
                   onClick={gameReviewed(gameState)}
-                  data-testid="start">
+                  data-testid="finished-ok">
                   OK
                 </Button>
               </Grid>

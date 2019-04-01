@@ -21,13 +21,13 @@ const styles = createStyles((theme: any) => ({
   },
 }));
 
-type Props = { classes: any; gameLog: any };
+type Props = { classes: any; componentProps: any; gameLog: any };
 
 function Results(props: Props) {
-  const { classes, gameLog } = props;
+  const { classes, componentProps, gameLog } = props;
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} {...componentProps}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>

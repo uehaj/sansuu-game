@@ -15,11 +15,13 @@ import GameMainPanel from './components/GameMainPanel';
 afterEach(cleanup);
 
 test('GameMainPanelを読み込んでSTARTボタンを押すとゲーム画面が表示される', async () => {
-  const { getByTestId, container } = render(<GameMainPanel log="" />);
+  const { getByTestId, container } = render(
+    <GameMainPanel useGameStateResult={null as any} log="" />
+  );
   const startButton = await waitForElement(() => getByTestId('start'));
   act(() => {
     fireEvent.click(startButton);
   });
-  expect(getByTestId('text')).toHaveTextContent('aaa');
+  expect(getByTestId('text')).toHaveTextContent('');
   expect(container.firstChild).toMatchSnapshot();
 });
