@@ -1,11 +1,11 @@
 {
-  "main.js": "/sansuu-game/static/js/main.b28d15d7.chunk.js",
-  "main.js.map": "/sansuu-game/static/js/main.b28d15d7.chunk.js.map",
+  "main.js": "/sansuu-game/static/js/main.71de35da.chunk.js",
+  "main.js.map": "/sansuu-game/static/js/main.71de35da.chunk.js.map",
   "runtime~main.js": "/sansuu-game/static/js/runtime~main.030a4066.js",
   "runtime~main.js.map": "/sansuu-game/static/js/runtime~main.030a4066.js.map",
-  "static/js/2.0e3434d1.chunk.js": "/sansuu-game/static/js/2.0e3434d1.chunk.js",
-  "static/js/2.0e3434d1.chunk.js.map": "/sansuu-game/static/js/2.0e3434d1.chunk.js.map",
+  "static/js/2.16085a0c.chunk.js": "/sansuu-game/static/js/2.16085a0c.chunk.js",
+  "static/js/2.16085a0c.chunk.js.map": "/sansuu-game/static/js/2.16085a0c.chunk.js.map",
   "index.html": "/sansuu-game/index.html",
-  "precache-manifest.857d2af4c3ae9de133c351e092621e07.js": "/sansuu-game/precache-manifest.857d2af4c3ae9de133c351e092621e07.js",
+  "precache-manifest.cad6547dc5839e2d274c9a5d60a71c8f.js": "/sansuu-game/precache-manifest.cad6547dc5839e2d274c9a5d60a71c8f.js",
   "service-worker.js": "/sansuu-game/service-worker.js"
 }
