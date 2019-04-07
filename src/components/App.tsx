@@ -4,9 +4,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
-import GameMainPanel from './GameMainPanel';
+import MainPanel from './MainPanel';
 import Header from './Header';
-import { useGameState, Game, GameState, Record } from '../gameState';
+import { useGameState, Game, GameState, Record } from '../hooks/useGameState';
 
 const styles = {
   root: {
@@ -27,12 +27,12 @@ type Props = {
 };
 
 function App({ classes, log }: Props) {
-  const useGameStateResult = useGameState();
+  const gameStateOperators = useGameState();
   return (
     <>
       <CssBaseline />
-      <Header useGameStateResult={useGameStateResult} />
-      <GameMainPanel useGameStateResult={useGameStateResult} log={log} />
+      <Header gameStateOperators={gameStateOperators} />
+      <MainPanel gameStateOperators={gameStateOperators} log={log} />
     </>
   );
 }

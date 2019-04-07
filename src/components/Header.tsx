@@ -8,54 +8,55 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 
-import { useGameState, Game, GameState, Record } from '../gameState';
+import { useGameState, Game, GameState, Record } from '../hooks/useGameState';
 
-const styles = {
-  root: {
-    flexGrow: 1,
-  },
-  grow: {
-    flexGrow: 1,
+const styles = createStyles({
+  appBar: {
+    marginBottom: '0.5rem',
   },
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
   },
-};
+});
 
 type Props = {
   classes: any;
-  useGameStateResult: ReturnType<typeof useGameState>;
+  gameStateOperators: ReturnType<typeof useGameState>;
 };
 
-function Header({ classes, useGameStateResult }: Props) {
+function Header({ classes, gameStateOperators }: Props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const {
     gameState,
     setPhase,
-    setCurrentRound,
+    addCurrentRound,
     setPlayerName,
     setStartTimeInString,
     setFinishTimeInString,
     setLastRoundStarted,
-    clearResult,
+    clear,
     addResult,
-  } = useGameStateResult;
+  } = gameStateOperators;
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (event: any) => {
+  const handleSelect = (event: any) => {
     setAnchorEl(null);
     setPhase('finished');
   };
 
+  const handleClose = (event: any) => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <IconButton
             className={classes.menuButton}
@@ -74,7 +75,7 @@ function Header({ classes, useGameStateResult }: Props) {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleClose}>
-          <MenuItem onClick={handleClose}>中止</MenuItem>
+          <MenuItem onClick={handleSelect}>中止</MenuItem>
         </Menu>
       </div>
     </>

@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { GameState } from '../gameState';
+import { GameState } from '../hooks/useGameState';
 
 const styles = createStyles((theme: any) => ({
   root: {
@@ -50,7 +50,7 @@ function Results(props: Props) {
                 {result[2]}
               </TableCell>
               <TableCell component="th" scope="row">
-                {result[3]}
+                {Math.round(result[3] * 10) / 10}
               </TableCell>
             </TableRow>
           ))}
