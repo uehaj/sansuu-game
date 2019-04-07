@@ -25,9 +25,10 @@ const styles = createStyles({
 type Props = {
   classes: any;
   gameStateOperators: ReturnType<typeof useGameState>;
+  setGameLog: (arg: [][]) => void;
 };
 
-function Header({ classes, gameStateOperators }: Props) {
+function Header({ classes, gameStateOperators, setGameLog }: Props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const {
     gameState,
@@ -45,8 +46,15 @@ function Header({ classes, gameStateOperators }: Props) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleSelect = (event: any) => {
+  const handleSelectBreak = (event: any) => {
     setAnchorEl(null);
+    setPhase('finished');
+  };
+
+  const handleSelectRecordClear = (event: any) => {
+    setAnchorEl(null);
+    localStorage.setItem('log', JSON.stringify([]));
+    setGameLog([]);
     setPhase('finished');
   };
 
@@ -75,7 +83,8 @@ function Header({ classes, gameStateOperators }: Props) {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleClose}>
-          <MenuItem onClick={handleSelect}>中止</MenuItem>
+          <MenuItem onClick={handleSelectBreak}>中止</MenuItem>
+          <MenuItem onClick={handleSelectRecordClear}>履歴を消去</MenuItem>
         </Menu>
       </div>
     </>

@@ -1,25 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 
 import MainPanel from './MainPanel';
-import Header from './Header';
 import { useGameState, Game, GameState, Record } from '../hooks/useGameState';
 
-const styles = {
-  root: {
-    flexGrow: 1,
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-};
+const styles = createStyles({});
 
 type Props = {
   classes: any;
@@ -27,12 +15,10 @@ type Props = {
 };
 
 function App({ classes, log }: Props) {
-  const gameStateOperators = useGameState();
   return (
     <>
       <CssBaseline />
-      <Header gameStateOperators={gameStateOperators} />
-      <MainPanel gameStateOperators={gameStateOperators} log={log} />
+      <MainPanel log={log} />
     </>
   );
 }

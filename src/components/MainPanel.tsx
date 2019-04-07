@@ -6,6 +6,8 @@ import Grid from '@material-ui/core/Grid';
 
 import NumPad from './NumPad';
 import Results from './Results';
+import Layout from './Layout';
+
 import { useGameState, Game, GameState, Record } from '../hooks/useGameState';
 
 const styles = createStyles({
@@ -33,17 +35,16 @@ function recordOf(gameState: GameState) {
   ];
   console.log('gameResult=', gameResult);
   return gameResult;
-  // localStorage.setItem('log', JSON.stringify([...log, gameResult]));
 }
 
 type Props = {
   classes: any;
-  gameStateOperators: ReturnType<typeof useGameState>;
   log: any;
 };
 
-function MainPanel({ classes, gameStateOperators, log }: Props) {
-  const [gameLog, setGameLog] = useState<[][]>(log);
+function MainPanel({ classes, log }: Props) {
+  const gameStateOperators = useGameState();
+
   const {
     gameState,
     setPhase,
@@ -55,6 +56,8 @@ function MainPanel({ classes, gameStateOperators, log }: Props) {
     clear,
     addResult,
   } = gameStateOperators;
+
+  const [gameLog, setGameLog] = useState<[][]>(log);
 
   // gameStateをイベントハンドラとの間でシェアする。
   const gameStateRef = useRef<GameState>(gameState);
@@ -106,100 +109,102 @@ function MainPanel({ classes, gameStateOperators, log }: Props) {
   };
 
   return (
-    <Grid container>
-      <Grid item xs={1} />
-      {(() => {
-        if (gameState.gamePhase === 'initial') {
-          setPhase('splash');
-          return <div />;
-        } else if (gameState.gamePhase === 'splash') {
-          setTimeout(() => {
-            setPhase('ready');
-          }, 1000);
-          return (
-            <Grid container>
-              <Grid item xs={12}>
-                <Typography align={'center'} variant={'h1'}>
-                  算数ゲーム
-                </Typography>
+    <Layout gameStateOperators={gameStateOperators} setGameLog={setGameLog}>
+      <Grid container>
+        <Grid item xs={1} />
+        {(() => {
+          if (gameState.gamePhase === 'initial') {
+            setPhase('splash');
+            return <div />;
+          } else if (gameState.gamePhase === 'splash') {
+            setTimeout(() => {
+              setPhase('ready');
+            }, 1000);
+            return (
+              <Grid container>
+                <Grid item xs={12}>
+                  <Typography align={'center'} variant={'h1'}>
+                    算数ゲーム
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography align={'center'} variant={'h4'}>
+                    さんすうゲームがはじまります。
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Typography align={'center'} variant={'h4'}>
-                  さんすうゲームがはじまります。
-                </Typography>
-              </Grid>
-            </Grid>
-          );
-        } else if (gameState.gamePhase === 'ready') {
-          return (
-            <Grid
-              container
-              style={{
-                flexDirection: 'column',
-              }}>
-              <Grid item sm={1} />
+            );
+          } else if (gameState.gamePhase === 'ready') {
+            return (
               <Grid
-                item
-                sm={10}
+                container
                 style={{
-                  textAlign: 'center',
+                  flexDirection: 'column',
                 }}>
-                <Button
-                  variant="contained"
-                  className={classes.button}
-                  color={'secondary'}
-                  onClick={gameStart}
-                  data-testid="start">
-                  START
-                </Button>
+                <Grid item sm={1} />
+                <Grid
+                  item
+                  sm={10}
+                  style={{
+                    textAlign: 'center',
+                  }}>
+                  <Button
+                    variant="contained"
+                    className={classes.button}
+                    color={'secondary'}
+                    onClick={gameStart}
+                    data-testid="start">
+                    START
+                  </Button>
+                </Grid>
+                <Grid item xs={1} />
               </Grid>
-              <Grid item xs={1} />
-            </Grid>
-          );
-        } else if (gameState.gamePhase === 'running') {
-          console.log('gameState==', gameState);
-          return (
-            <Grid item xs={10}>
-              <NumPad
-                gameState={gameState}
-                setPhase={setPhase}
-                onAnswered={handleAnswered}
-              />
-            </Grid>
-          );
-        } else if (gameState.gamePhase === 'finished') {
-          return (
-            <Grid container>
-              <Grid item xs={12}>
-                <Results
-                  componentProps={{
-                    width: '100%',
-                  }}
-                  gameLog={gameLog}
+            );
+          } else if (gameState.gamePhase === 'running') {
+            console.log('gameState==', gameState);
+            return (
+              <Grid item xs={10}>
+                <NumPad
+                  gameState={gameState}
+                  setPhase={setPhase}
+                  onAnswered={handleAnswered}
                 />
               </Grid>
-              <Grid
-                item
-                xs={12}
-                style={{
-                  textAlign: 'center',
-                }}>
-                <Button
-                  variant="contained"
-                  className={classes.button}
-                  color={'secondary'}
-                  onClick={gameReviewed(gameState)}
-                  data-testid="finished-ok">
-                  OK
-                </Button>
+            );
+          } else if (gameState.gamePhase === 'finished') {
+            return (
+              <Grid container>
+                <Grid item xs={12}>
+                  <Results
+                    componentProps={{
+                      width: '100%',
+                    }}
+                    gameLog={gameLog}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    textAlign: 'center',
+                  }}>
+                  <Button
+                    variant="contained"
+                    className={classes.button}
+                    color={'secondary'}
+                    onClick={gameReviewed(gameState)}
+                    data-testid="finished-ok">
+                    OK
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          );
-        } else {
-          return <div>Error: {gameState.gamePhase}</div>;
-        }
-      })()}
-    </Grid>
+            );
+          } else {
+            return <div>Error: {gameState.gamePhase}</div>;
+          }
+        })()}
+      </Grid>
+    </Layout>
   );
 }
 
