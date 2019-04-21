@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/sansuu-game/precache-manifest.ab40a62938a558d1a6a4eeb4e101f9db.js"
+  "/sansuu-game/precache-manifest.a6e434a6ff67f4b589f0ac85af74c56d.js"
 );
 
 workbox.clientsClaim();
