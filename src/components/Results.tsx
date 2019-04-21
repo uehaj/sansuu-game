@@ -33,7 +33,7 @@ function Results(props: Props) {
           <TableRow>
             <TableCell>日付</TableCell>
             <TableCell>名前</TableCell>
-            <TableCell>正解</TableCell>
+            <TableCell>正解率</TableCell>
             <TableCell>平均時間</TableCell>
           </TableRow>
         </TableHead>

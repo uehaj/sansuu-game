@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 import AnsweredPanel from '../components/AnsweredPanel';
-import { Game, GameState, GamePhase } from '../hooks/useGameState';
+import { Question, GameState, GamePhase } from '../hooks/useGameState';
 
 const styles = createStyles({
   buttonWrapper: {
@@ -20,7 +20,7 @@ const styles = createStyles({
   },
 });
 
-function genMessage(game: Game, answer: number | null) {
+function genMessage(game: Question, answer: number | null) {
   if (answer === null) {
     return '';
   } else if (game.answer === answer) {
@@ -55,13 +55,11 @@ const handleCLR = (setNumber: (z: number | ((y: number) => number)) => void) =>
 
 const handleOK = (
   setNumber: (z: number | ((y: number) => number)) => void,
-  setAnswer: (z: number) => void,
-  onAnswered: Props['onAnswered']
+  setAnswer: (z: number) => void
 ) =>
   useCallback((event: any) => {
     setNumber(prevN => {
       setAnswer(prevN);
-      onAnswered(prevN);
       return prevN;
     });
   }, []);
@@ -82,26 +80,29 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
   const gameStateRef = useRef<GameState>(gameState);
   gameStateRef.current = gameState;
 
-  const game = gameState.gameRounds[gameState.currentGameRound];
+  const game = gameState.questions[gameState.currentQuestion];
   return (
     <>
       <AnsweredPanel
         message={genMessage(game, answer)}
         answerShowing={answer !== null}
         onOk={() => {
-          setAnswer(null);
           setNumber(0);
           const gameState = gameStateRef.current;
-          if (gameState.currentGameRound === gameState.gameRounds.length - 1) {
+          if (gameState.currentQuestion === gameState.questions.length - 1) {
             setPhase('finished');
+          }
+          if (answer !== null) {
+            onAnswered(answer);
+            setAnswer(null);
           }
         }}
       />
       <Grid container spacing={32}>
         <Grid item xs={12}>
           <Typography variant={'h4'} align={'center'}>
-            <b>{`問題${gameState.currentGameRound + 1} `}</b>/{' '}
-            {gameState.gameRounds.length}
+            <b>{`問題${gameState.currentQuestion + 1} `}</b>/{' '}
+            {gameState.questions.length}
           </Typography>
         </Grid>
       </Grid>
@@ -144,7 +145,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
             <Button
               variant={'contained'}
               className={classes.button}
-              onClick={handleOK(setNumber, setAnswer, onAnswered)}
+              onClick={handleOK(setNumber, setAnswer)}
               buttonRef={ref}>
               OK
             </Button>

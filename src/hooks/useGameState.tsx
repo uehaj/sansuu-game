@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 export type GamePhase = 'initial' | 'splash' | 'ready' | 'running' | 'finished';
 
-export class Game {
+export class Question {
   private leftHandSide: number;
   private rightHandSide: number;
   private operationName: string;
@@ -33,8 +33,8 @@ export type Record = {
 
 export type GameState = {
   gamePhase: GamePhase;
-  currentGameRound: number;
-  gameRounds: Game[];
+  currentQuestion: number;
+  questions: Question[];
   results: Record[];
   playerName?: string;
   startTimeInString?: string;
@@ -42,12 +42,12 @@ export type GameState = {
   lastRoundStarted?: number;
 };
 
-function generateGames(nRounds: number): Game[] {
+function generateGames(nRounds: number): Question[] {
   return Array(nRounds)
     .fill(0)
     .map(
       (_, i) =>
-        new Game(
+        new Question(
           Math.floor(Math.random() * 99) + 1,
           Math.floor(Math.random() * 99) + 1,
           '＋',
@@ -59,8 +59,8 @@ function generateGames(nRounds: number): Game[] {
 export function useGameState(nRounds = 5) {
   const [gameState, setGameState] = useState<GameState>({
     gamePhase: 'initial',
-    currentGameRound: 0,
-    gameRounds: generateGames(nRounds),
+    currentQuestion: 0,
+    questions: generateGames(nRounds),
     results: [] as Record[],
   });
   return {
@@ -74,7 +74,7 @@ export function useGameState(nRounds = 5) {
     addCurrentRound: () => {
       setGameState(prevState => ({
         ...prevState,
-        currentGameRound: prevState.currentGameRound + 1,
+        currentQuestion: prevState.currentQuestion + 1,
       }));
     },
     setPlayerName: (playerName: string) => {
@@ -105,7 +105,7 @@ export function useGameState(nRounds = 5) {
       setGameState(prevState => ({
         ...prevState,
         results: [],
-        currentGameRound: 0,
+        currentQuestion: 0,
       }));
     },
     addResult: (result: Record) => {

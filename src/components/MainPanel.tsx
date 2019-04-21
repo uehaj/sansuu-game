@@ -8,7 +8,12 @@ import NumPad from './NumPad';
 import Results from './Results';
 import Layout from './Layout';
 
-import { useGameState, Game, GameState, Record } from '../hooks/useGameState';
+import {
+  useGameState,
+  Question,
+  GameState,
+  Record,
+} from '../hooks/useGameState';
 
 const styles = createStyles({
   button: {
@@ -19,6 +24,7 @@ const styles = createStyles({
 });
 
 function recordOf(gameState: GameState) {
+  console.log(gameState);
   const gameResult = [
     gameState.startTimeInString,
     gameState.playerName,
@@ -31,7 +37,7 @@ function recordOf(gameState: GameState) {
       0
     ) /
       1000 /
-      gameState.gameRounds.length,
+      gameState.questions.length,
   ];
   console.log('gameResult=', gameResult);
   return gameResult;
@@ -73,31 +79,38 @@ function MainPanel({ classes, log }: Props) {
     setPlayerName('unknown');
   }, []);
 
-  // 問題1問に対する回答がなされたときに呼びだされるイベントハンドラ。
+  // ひとつの質問の回答がなされたときに呼びだされるイベントハンドラ。
   const handleAnswered = useCallback((answer: number) => {
-    const gameState = gameStateRef.current;
+    let gameState = gameStateRef.current;
 
+    // この質問の開始時刻と現在時刻の差を記録
     if (gameState.lastRoundStarted) {
-      const game = gameState.gameRounds[gameState.currentGameRound];
+      const game = gameState.questions[gameState.currentQuestion];
+      console.log('[1]', gameState);
       if (gameState.lastRoundStarted) {
         addResult({
           elapsedTimeInMilliSec: Date.now() - gameState.lastRoundStarted,
           correct: game.answer === answer,
         });
       }
+      console.log('[2]', gameState);
     }
 
-    if (gameState.currentGameRound === gameState.gameRounds.length - 1) {
+    if (gameState.currentQuestion === gameState.questions.length - 1) {
       // 一連の問題(Round)が終了
-      setFinishTimeInString(new Date().toString());
-      const record = recordOf(gameState);
-      setGameLog((prevValue: any) => {
-        const nextValue = [...prevValue, record];
-        console.log(nextValue);
-        localStorage.setItem('log', JSON.stringify(nextValue));
-        return nextValue;
+      setImmediate(() => {
+        // addResultで更新されたgameStateを使うため次のイベントループで処理する
+        setFinishTimeInString(new Date().toString());
+        gameState = gameStateRef.current;
+        setGameLog((prevValue: any) => {
+          const record = recordOf(gameState);
+          const nextValue = [...prevValue, record];
+          console.log(nextValue);
+          localStorage.setItem('log', JSON.stringify(nextValue));
+          return nextValue;
+        });
+        setPhase('finished');
       });
-      setPhase('finished');
     } else {
       addCurrentRound();
     }

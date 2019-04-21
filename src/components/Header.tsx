@@ -10,7 +10,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 
-import { useGameState, Game, GameState, Record } from '../hooks/useGameState';
+import { useGameState } from '../hooks/useGameState';
 
 const styles = createStyles({
   appBar: {
