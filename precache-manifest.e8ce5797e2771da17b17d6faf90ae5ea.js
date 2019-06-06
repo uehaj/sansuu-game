@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "07a2883d38e6cb202d4b",
-    "url": "/sansuu-game/static/js/main.f71e4ba3.chunk.js"
+    "revision": "604b54d84a15e2b83b4d",
+    "url": "/sansuu-game/static/js/main.012af855.chunk.js"
   },
   {
     "revision": "086f532a03a9c04981bb",
@@ -12,7 +12,7 @@ self.__precacheManifest = [
     "url": "/sansuu-game/static/js/2.9a7bc424.chunk.js"
   },
   {
-    "revision": "a6bf9cabfcdd28aa94b104c09b5f3813",
+    "revision": "a1bb22cc7b80c2b9d984057cbcd33738",
     "url": "/sansuu-game/index.html"
   }
 ];
