@@ -37,36 +37,27 @@ type Props = {
   gameState: GameState;
 };
 
-const handleNumberPressed = (
-  keyTop: number,
-  setNumber: (z: number | ((y: number) => number)) => void
-) =>
-  useCallback(
-    (event: any) => {
+function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
+  const [number, setNumber] = useState<number>(0);
+  const [answer, setAnswer] = useState<number | null>(null);
+
+  const handleNumberPressed = useCallback(
+    (keyTop: number) => (event: any) => {
       setNumber((prevN: number) => prevN * 10 + keyTop);
     },
-    [keyTop, setNumber]
+    [setNumber]
   );
 
-const handleCLR = (setNumber: (z: number | ((y: number) => number)) => void) =>
-  useCallback((event: any) => {
+  const handleCLR = useCallback((event: any) => {
     setNumber(0);
   }, []);
 
-const handleOK = (
-  setNumber: (z: number | ((y: number) => number)) => void,
-  setAnswer: (z: number) => void
-) =>
-  useCallback((event: any) => {
+  const handleOK = useCallback((event: any) => {
     setNumber(prevN => {
       setAnswer(prevN);
       return prevN;
     });
   }, []);
-
-function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
-  const [number, setNumber] = useState<number>(0);
-  const [answer, setAnswer] = useState<number | null>(null);
 
   // refを使ってボタンにフォーカスを取得させる
   const ref = useRef();
@@ -98,7 +89,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
           }
         }}
       />
-      <Grid container spacing={32}>
+      <Grid container spacing={4}>
         <Grid item xs={12}>
           <Typography variant={'h4'} align={'center'}>
             <b>{`問題${gameState.currentQuestion + 1} `}</b>/{' '}
@@ -108,7 +99,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
       </Grid>
       <Grid
         container
-        spacing={32}
+        spacing={4}
         style={{ marginBottom: '0.5rem', padding: '0.1fem' }}>
         <Grid item xs={12} sm={6}>
           <Typography variant={'h4'}>{`${game.question}`}</Typography>
@@ -128,7 +119,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
               <Button
                 variant={'contained'}
                 className={classes.button}
-                onClick={handleNumberPressed(n, setNumber)}>
+                onClick={handleNumberPressed(n)}>
                 {n}
               </Button>
             </Grid>
@@ -137,7 +128,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
             <Button
               variant={'contained'}
               className={classes.button}
-              onClick={handleCLR(setNumber)}>
+              onClick={handleCLR}>
               CLR
             </Button>
           </Grid>
@@ -145,7 +136,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
             <Button
               variant={'contained'}
               className={classes.button}
-              onClick={handleOK(setNumber, setAnswer)}
+              onClick={handleOK}
               buttonRef={ref}>
               OK
             </Button>
