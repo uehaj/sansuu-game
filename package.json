@@ -45,6 +45,10 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "engines": {
+    "node": ">=16.x",
+    "yarn": ">=1.22.0"
+  },
   "devDependencies": {},
   "homepage" : "https://uehaj.github.io/sansuu-game/"
 }
