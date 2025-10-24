@@ -60,10 +60,10 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
   }, []);
 
   // refを使ってボタンにフォーカスを取得させる
-  const ref = useRef();
+  const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (ref && ref.current) {
-      (ref.current as any).focus();
+      ref.current.focus();
     }
   });
 
@@ -113,7 +113,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
         </Grid>
       </Grid>
       <Paper style={{ margin: '0.1em', padding: '0.1em' }}>
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(n => (
             <Grid item xs={4} key={n} style={{ textAlign: 'center' }}>
               <Button
@@ -137,7 +137,7 @@ function NumPad({ classes, gameState, onAnswered, setPhase }: Props) {
               variant={'contained'}
               className={classes.button}
               onClick={handleOK}
-              buttonRef={ref}>
+              ref={ref}>
               OK
             </Button>
           </Grid>

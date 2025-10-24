@@ -1,30 +1,40 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import {
   render,
   fireEvent,
   cleanup,
   waitFor,
-  act,
+  screen,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { useGameState } from './hooks/useGameState';
-import GameMainPanel from './components/MainPanel';
+import MainPanel from './components/MainPanel';
 
 afterEach(cleanup);
 
-// TODO: Update this test to work with the new component structure after dependency upgrade
-// @ts-ignore - Props need to be updated for new component structure
-test.skip('GameMainPanelを読み込んでSTARTボタンを押すとゲーム画面が表示される', async () => {
-  const { getByTestId, container } = render(
-    // @ts-ignore - Props need to be updated
-    <GameMainPanel log="" />
+test('MainPanelを読み込んでSTARTボタンを押すとゲーム画面が表示される', async () => {
+  const { getByTestId } = render(
+    <MainPanel log={[]} />
   );
-  const startButton = await waitFor(() => getByTestId('start'));
-  act(() => {
-    fireEvent.click(startButton);
+
+  // スプラッシュ画面からREADY画面に遷移するまで待つ（最大3秒）
+  const startButton = await waitFor(
+    () => getByTestId('start'),
+    { timeout: 3000 }
+  );
+
+  expect(startButton).toBeInTheDocument();
+  expect(startButton).toHaveTextContent('START');
+
+  // STARTボタンをクリック
+  fireEvent.click(startButton);
+
+  // ゲームが開始されて問題が表示されるまで待つ
+  await waitFor(() => {
+    expect(screen.getByText(/問題1/)).toBeInTheDocument();
   });
-  expect(getByTestId('text')).toHaveTextContent('');
-  expect(container.firstChild).toMatchSnapshot();
+
+  // 問題テキストが表示されることを確認（算数問題の形式）
+  expect(screen.getByText(/の答えは？/)).toBeInTheDocument();
 });
+
