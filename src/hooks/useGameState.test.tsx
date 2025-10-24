@@ -1,6 +1,7 @@
 // useCounter.test.js
-import { renderHook, cleanup, act } from 'react-hooks-testing-library';
-import { useGameState } from './gameState';
+import { renderHook, cleanup } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
+import { useGameState } from './useGameState';
 
 afterEach(cleanup);
 
