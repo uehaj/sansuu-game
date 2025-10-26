@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './index.css';
 import App from './components/App';
 
 const stringLog: string | null = localStorage.getItem('log');
