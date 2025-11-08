@@ -4,9 +4,37 @@ on:
   push:
     branches: [ main, master ]
   pull_request:
+    types: [opened, synchronize]
     branches: [ main, master ]
+  issue_comment:
+    types: [created, edited]
 
 jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && github.event.issue.pull_request)
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            このPRのコードをレビューしてください。以下の観点で確認してください：
+            - コードの品質と可読性
+            - 潜在的なバグやエラーハンドリングの問題
+            - パフォーマンスの懸念
+            - セキュリティの問題
+            - ベストプラクティスへの準拠
+
+            改善提案がある場合は、具体的なコード例とともに説明してください。
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
   test:
     runs-on: ubuntu-latest
 
